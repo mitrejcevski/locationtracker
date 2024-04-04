@@ -1,10 +1,16 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
 android {
-    namespace = "nl.jovmit.loctrack.sdk"
+    namespace = "io.github.mitrejcevski.locationtracker"
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
 
     defaultConfig {
@@ -32,13 +38,28 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    testOptions.unitTests {
+        isReturnDefaultValues = true
+        all { tests ->
+            tests.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
+    implementation(libs.bundles.androidx)
+    implementation(libs.bundles.network)
+    implementation(libs.play.services.location)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    testImplementation(libs.bundles.unitTest)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
+}
+
+apply {
+    from("../publish-package.gradle")
 }
