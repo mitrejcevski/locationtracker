@@ -13,12 +13,17 @@ loading location and submitting it respectively.
 
 ## Usage
 The usage of the library is rather simple.
+
 1. Add the dependency in the build.gradle file
+
 ```kotlin
 implementation("io.github.mitrejcevski:locationtracker:1.0.0-SNAPSHOT")
 ```
+
 2. In your main activity, instantiate the tracker by passing the desired configuration
-   2.1 Without Dependency Injection container:
+   
+2.1 Without Dependency Injection container:
+
 ```kotlin
 class MainActivity : AppCompatActivity() {
     private val locationTracker by viewModels<LocationTracker> {
@@ -34,13 +39,28 @@ class MainActivity : AppCompatActivity() {
     ...
 }
 ```
+
 2.2 With Dependency Injection container:
+
 ```kotlin
 class MainActivity : AppCompatActivity() {
     private val locationTracker by viewModels<LocationTracker>()
     ...
 }
 ```
+
+3. Additional customizations - you can supply your own implementations for checking permissions granted, location loading, and location submission.
+
+```kotlin
+val configuration = LocationTrackerConfig.Builder()
+     .setLocationPermissionChecker(yourOwnImplementation)
+     .setLocationFetcher(yourOwnImplementation)
+     .setLocationSubmitter(yourOwnImplementation)
+     .build()
+```
+
+That would allow to mix and match different components with the default built-in ones, and enable testability.
+
 
 ## Design Choices
 The SDK is designed with a possibility to convert it into KMP in the future, and support iOS too. It keeps the testability in mind as well. Additionally, it should be highly configurable allowing the user to use the default implementation of the components, as well as providing custom implementations of them.
