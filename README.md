@@ -1,5 +1,6 @@
 # locationtracker
 Location Tracking SDK &amp; Sample App.
+
 ## Description
 The location tracker SDK is currently supporting only Android apps, and it is designed in a way to
 be converted to Kotlin MultiPlatform and support iOS apps easily, if need be.
@@ -14,15 +15,17 @@ loading location and submitting it respectively.
 ## Usage
 The usage of the library is rather simple.
 
-1. Add the dependency in the build.gradle file
+## 1. Setup Dependency
+Add the dependency in the build.gradle file
 
 ```kotlin
 implementation("io.github.mitrejcevski:locationtracker:1.0.0-SNAPSHOT")
 ```
 
-2. In your main activity, instantiate the tracker by passing the desired configuration
-   
-2.1 Without Dependency Injection container:
+## 2. Instantiation
+In your main activity, instantiate the tracker by passing the desired configuration.
+
+#### 2.1 Without Dependency Injection Container:
 
 ```kotlin
 class MainActivity : AppCompatActivity() {
@@ -40,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-2.2 With Dependency Injection container:
+#### 2.2 With Dependency Injection Container:
 
 ```kotlin
 class MainActivity : AppCompatActivity() {
@@ -49,7 +52,45 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-3. Additional customizations - you can supply your own implementations for checking permissions granted, location loading, and location submission.
+## 3. Track location
+The SDK can track regular location updates, and request a location update on-demand.
+
+#### 3.1 Track regular location updates
+
+```kotlin
+locationTracker.startTrackingLocation()
+```
+
+#### 3.2 Request no-demand location update
+
+```kotlin
+locationTracker.requestCurrentLocation()
+```
+
+#### 3.3 Observe current state (Optional)
+The SDK provides an observable property that you can use to check the current state
+of the SDK (location fetching, submitssions, failures).
+
+##### 3.3.1 Jetpack Compose
+
+```kotlin
+val state by locationTracker.locationTrackingState.collectAsStateWithLifecycle()
+```
+
+##### 3.3.1 Traditional Android UI
+
+```kotlin
+lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        locationTracker.locationTrackingState.collectLatest { state ->
+            //do something with the state
+        }
+    }
+}
+```
+
+## 4. Additional customizations
+You can supply your own implementations for checking permissions granted, location loading, and location submission.
 
 ```kotlin
 val configuration = LocationTrackerConfig.Builder()
